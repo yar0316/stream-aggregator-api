@@ -25,6 +25,7 @@ Stream Aggregator API の実装を段階的に進めるためのタスク分割�
 ### 1. 基盤設定・プロジェクト初期化
 
 #### Task 1.1: FastAPI アプリケーション基盤構築
+
 - **概要**: FastAPIアプリの基本構造を作成
 - **成果物**: `main.py`, `app/` ディレクトリ構造
 - **テスト**: ヘルスチェックエンドポイント動作確認
@@ -46,6 +47,7 @@ stream-aggregator-api/
 ```
 
 #### Task 1.2: Supabase 接続・認証設定
+
 - **概要**: Supabase Python SDK統合、JWTトークン検証
 - **成果物**: `app/core/database.py`, `app/core/auth.py`
 - **テスト**: 認証ミドルウェアの単体テスト
@@ -53,6 +55,7 @@ stream-aggregator-api/
 - **工数**: 1日
 
 #### Task 1.3: 基本ミドルウェア・例外ハンドラー設定
+
 - **概要**: CORS、ロギング、例外処理の設定
 - **成果物**: `app/middleware/`, `app/core/exceptions.py`
 - **テスト**: ミドルウェア動作確認テスト
@@ -62,6 +65,7 @@ stream-aggregator-api/
 ### 2. データモデル・Pydantic スキーマ定義
 
 #### Task 2.1: Pydantic データモデル作成
+
 - **概要**: 実際のSupabase スキーマに基づくPydantic モデル定義
 - **成果物**: `app/models/user.py`, `app/models/stream.py`, `app/models/platform.py`
 - **テスト**: モデル validation テスト
@@ -84,6 +88,7 @@ class StreamModel(BaseModel):
 ```
 
 #### Task 2.2: API レスポンス共通スキーマ定義
+
 - **概要**: フロントエンド期待形式に準拠したレスポンススキーマ
 - **成果物**: `app/models/responses.py`
 - **テスト**: レスポンス形式validation テスト
@@ -93,6 +98,7 @@ class StreamModel(BaseModel):
 ### 3. OAuth認証システム実装
 
 #### Task 3.1: Twitch OAuth コールバック API
+
 - **概要**: `/api/auth/twitch/callback` エンドポイント実装
 - **成果物**: `app/routers/auth.py` (Twitch部分)
 - **テスト**: 認証フロー統合テスト、エラーケーステスト
@@ -100,11 +106,13 @@ class StreamModel(BaseModel):
 - **工数**: 1.5日
 
 **テストケース**:
+
 - 有効な認証コード処理
 - 無効認証コード時のエラーハンドリング
 - トークンリフレッシュ処理
 
 #### Task 3.2: YouTube OAuth コールバック API
+
 - **概要**: `/api/auth/youtube/callback` エンドポイント実装
 - **成果物**: `app/routers/auth.py` (YouTube部分)
 - **テスト**: Google OAuth フロー統合テスト
@@ -112,6 +120,7 @@ class StreamModel(BaseModel):
 - **工数**: 1.5日
 
 #### Task 3.3: トークンリフレッシュ API
+
 - **概要**: `/api/auth/{platform}/refresh` エンドポイント実装
 - **成果物**: `app/services/oauth.py`
 - **テスト**: トークン更新・有効期限チェックテスト
@@ -121,6 +130,7 @@ class StreamModel(BaseModel):
 ### 4. 外部API統合サービス実装
 
 #### Task 4.1: Twitch API サービス
+
 - **概要**: Twitch Helix API統合、配信データ取得
 - **成果物**: `app/services/twitch_api.py`
 - **テスト**: API呼び出し・レート制限・エラーハンドリングテスト
@@ -128,11 +138,13 @@ class StreamModel(BaseModel):
 - **工数**: 2日
 
 **実装範囲**:
+
 - 配信一覧取得 (`/streams`)
 - チャンネル情報取得 (`/users`, `/channels`)
 - カテゴリ情報取得 (`/games`)
 
 #### Task 4.2: YouTube API サービス
+
 - **概要**: YouTube Data API v3統合、配信データ取得
 - **成果物**: `app/services/youtube_api.py`
 - **テスト**: API呼び出し・Quota管理テスト
@@ -140,11 +152,13 @@ class StreamModel(BaseModel):
 - **工数**: 2日
 
 **実装範囲**:
+
 - ライブ配信検索 (`/search`)
 - チャンネル詳細取得 (`/channels`)
 - 動画情報取得 (`/videos`)
 
 #### Task 4.3: データ正規化サービス
+
 - **概要**: プラットフォーム間データ統一、ゲーム名正規化
 - **成果物**: `app/services/data_normalizer.py`
 - **テスト**: ゲーム名抽出・データ変換テスト
@@ -152,6 +166,7 @@ class StreamModel(BaseModel):
 - **工数**: 1.5日
 
 **実装機能**:
+
 - YouTube タイトル解析 (`【Apex Legends】` → `"Apex Legends"`)
 - プラットフォーム統一Stream形式変換
 - ゲーム名マッピング辞書
@@ -159,6 +174,7 @@ class StreamModel(BaseModel):
 ### 5. 配信データ管理 API実装
 
 #### Task 5.1: 配信一覧取得 API
+
 - **概要**: `/api/streams` エンドポイント (フロントエンド統合仕様準拠)
 - **成果物**: `app/routers/streams.py`
 - **テスト**: フィルタ・ソート・ページネーション統合テスト
@@ -166,12 +182,14 @@ class StreamModel(BaseModel):
 - **工数**: 2日
 
 **実装機能**:
+
 - プラットフォームフィルタ (`platform=all|youtube|twitch`)
 - ゲームカテゴリフィルタ (`category`)
 - ソート機能 (`sort=viewers|recent`)
 - ページネーション (`limit`, `offset`)
 
 #### Task 5.2: ゲームカテゴリ管理 API
+
 - **概要**: `/api/games/categories` エンドポイント実装
 - **成果物**: `app/routers/games.py`
 - **テスト**: カテゴリ集計・統計データテスト
@@ -179,6 +197,7 @@ class StreamModel(BaseModel):
 - **工数**: 1日
 
 #### Task 5.3: 配信データ更新・キャッシュサービス
+
 - **概要**: 外部APIからの定期データ取得・更新機能
 - **成果物**: `app/services/stream_updater.py`
 - **テスト**: バッチ処理・エラー回復テスト
@@ -188,6 +207,7 @@ class StreamModel(BaseModel):
 ### 6. システム管理 API
 
 #### Task 6.1: ヘルスチェック API
+
 - **概要**: `/api/health` エンドポイント、システム状態監視
 - **成果物**: `app/routers/health.py`
 - **テスト**: 各種サービス接続確認テスト
@@ -195,6 +215,7 @@ class StreamModel(BaseModel):
 - **工数**: 0.5日
 
 #### Task 6.2: 設定管理 API
+
 - **概要**: `/api/config` エンドポイント、アプリケーション設定取得
 - **成果物**: `app/routers/config.py`
 - **テスト**: 設定情報取得・権限チェックテスト
@@ -208,6 +229,7 @@ class StreamModel(BaseModel):
 ### 7. エラーハンドリング・ログ強化
 
 #### Task 7.1: 構造化ログシステム
+
 - **概要**: JSON形式ログ、ログレベル管理、外部監視連携
 - **成果物**: `app/core/logging.py`
 - **テスト**: ログ出力・フィルタリングテスト
@@ -215,6 +237,7 @@ class StreamModel(BaseModel):
 - **工数**: 1日
 
 #### Task 7.2: カスタム例外・エラーレスポンス
+
 - **概要**: API特有例外クラス、フロントエンド対応エラー形式
 - **成果物**: `app/core/exceptions.py` 拡張
 - **テスト**: 各種エラーケース網羅テスト
@@ -224,6 +247,7 @@ class StreamModel(BaseModel):
 ### 8. パフォーマンス最適化
 
 #### Task 8.1: レート制限・API制御
+
 - **概要**: 外部API呼び出し制限、ユーザーレート制限
 - **成果物**: `app/services/rate_limiter.py`
 - **テスト**: レート制限動作・回復テスト
@@ -231,6 +255,7 @@ class StreamModel(BaseModel):
 - **工数**: 1.5日
 
 #### Task 8.2: 並列処理・非同期最適化
+
 - **概要**: 複数プラットフォーム並列取得、asyncio活用
 - **成果物**: `app/services/concurrent_fetcher.py`
 - **テスト**: 並列処理・タイムアウト処理テスト
@@ -238,6 +263,7 @@ class StreamModel(BaseModel):
 - **工数**: 2日
 
 #### Task 8.3: データベース最適化
+
 - **概要**: クエリ最適化、インデックス活用、接続プール管理
 - **成果物**: `app/core/database.py` 拡張
 - **テスト**: パフォーマンステスト
@@ -249,6 +275,7 @@ class StreamModel(BaseModel):
 ## 実装工程表
 
 ### Week 1-2: Phase 1 Core (14日)
+
 - Task 1.1-1.3: 基盤構築 (2日)
 - Task 2.1-2.2: データモデル (1.5日)
 - Task 3.1-3.3: OAuth認証 (4日)
@@ -256,11 +283,13 @@ class StreamModel(BaseModel):
 - バッファ・テスト調整 (1日)
 
 ### Week 3: Phase 1 API (7日)
+
 - Task 5.1-5.3: 配信データAPI (5日)
 - Task 6.1-6.2: システム管理API (1日)
 - 統合テスト・デバッグ (1日)
 
 ### Week 4: Phase 2 Enhancement (7日)
+
 - Task 7.1-7.2: エラーハンドリング (2日)
 - Task 8.1-8.3: パフォーマンス (5日)
 
